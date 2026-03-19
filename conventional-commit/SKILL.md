@@ -19,12 +19,21 @@ Follow these steps **in order**:
 
 Run `git diff --staged` and `git diff` (unstaged) to understand what changed. Also run `git status` to see untracked files. Build a clear picture of the intent behind the changes.
 
-### Step 2 — Determine the commit message
+### Step 2 — Determine the issue number
+
+Check if the current context reveals an issue number (e.g. from the branch name like `issue/12-some-feature`, a recent git log, or an explicit mention in the conversation).
+
+- If an issue number **is known**, append it to the end of the first line: `<type>[scope]: <description> (#<issue-number>)`
+- If no issue number is found, **ask the user**: "I couldn't detect an issue number — please provide one (e.g. `#42`) or say **ignore** to skip it."
+  - If the user provides one → use it
+  - If the user says **ignore** → omit it
+
+### Step 3 — Determine the commit message
 
 Construct a commit message following the Conventional Commits spec:
 
 ```
-<type>[optional scope]: <description>
+<type>[optional scope]: <description> [#issue-number]
 
 [optional body]
 
@@ -49,7 +58,7 @@ Construct a commit message following the Conventional Commits spec:
 - Body is optional; use it to explain *what* and *why*, not *how*; wrap at 72 chars
 - Footers are `Token: value` pairs after a blank line; `BREAKING CHANGE: <desc>` is mandatory for any breaking change
 
-### Step 3 — Update CHANGELOG.md (if it exists)
+### Step 4 — Update CHANGELOG.md (if it exists)
 
 Check if a `CHANGELOG.md` file exists in the project root. If it does:
 
@@ -69,7 +78,7 @@ Check if a `CHANGELOG.md` file exists in the project root. If it does:
 5. Do **not** create a new versioned section — only add to `[Unreleased]`.
 6. If the subsection (`### Added`, `### Fixed`, etc.) doesn't exist yet, create it under `[Unreleased]`.
 
-### Step 4 — Present the plan and ask for confirmation
+### Step 5 — Present the plan and ask for confirmation
 
 Show the user:
 1. The exact commit message you will use (formatted as a code block)
@@ -78,15 +87,15 @@ Show the user:
 
 Wait for the user's response before doing anything else.
 
-- If **yes** → proceed to Step 5
-- If **edit** → ask what to change, apply it, and re-show the plan (loop back to Step 4)
+- If **yes** → proceed to Step 6
+- If **edit** → ask what to change, apply it, and re-show the plan (loop back to Step 5)
 - If **cancel** → stop and inform the user nothing was committed
 
-### Step 5 — Apply CHANGELOG.md changes (if applicable)
+### Step 6 — Apply CHANGELOG.md changes (if applicable)
 
-Edit the `CHANGELOG.md` file with the changes described in Step 3.
+Edit the `CHANGELOG.md` file with the changes described in Step 4.
 
-### Step 6 — Stage and commit
+### Step 7 — Stage and commit
 
 Stage any unstaged relevant files if the user expects them included (ask if ambiguous).
 
@@ -114,7 +123,7 @@ Confirm success by running `git log --oneline -1`.
 
 **Message:**
 \`\`\`
-feat(auth): add refresh token rotation on login
+feat(auth): add refresh token rotation on login (#42)
 
 Rotate the refresh token on every successful login to reduce
 the risk of token replay attacks.
