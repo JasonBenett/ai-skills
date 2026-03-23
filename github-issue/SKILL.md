@@ -5,6 +5,8 @@ triggers:
   - when the user wants to start working on a GitHub issue
   - when the user mentions an issue number and wants to implement it
   - when the user invokes /github-issue or /issue
+  - when the user asks to fetch, fix, or work on an issue by number
+  - when the user says "proceed with" or "implement" or any synonym for an issue
 ---
 
 # GitHub Issue Skill
@@ -19,7 +21,7 @@ The GitHub organization and repository are inferred from the current project con
 
 Fetch the issue using the `mcp__github__issue_read` tool with `method: "get"`.
 
-## Step 2 — Present the issue and offer two modes
+## Step 2 — Present the issue
 
 Display a concise summary of the issue:
 
@@ -28,26 +30,14 @@ Display a concise summary of the issue:
 <body (truncated to ~300 chars if long)>
 ```
 
-Then ask the user to choose a mode:
-
-```
-How would you like to proceed?
-
-**[1] Branch only** — Create a branch for this issue and switch to it. No implementation yet.
-**[2] Full workflow** — Read the ticket, plan the implementation, then proceed with coding.
-
-Reply with 1 or 2.
-```
-
-Wait for the user's response before continuing.
-
 ---
 
-## Mode 1 — Branch only
+## Step 3 - Full workflow
 
 ### Branch naming
 
 Derive the branch name from the issue using the format:
+
 ```
 issue/<number>-<short-slug>
 ```
@@ -58,14 +48,10 @@ Example: issue #12 "Introduce tests on server side" → `issue/12-introduce-test
 
 ### Steps
 
-1. Present the proposed branch name and ask for confirmation: **"Create and switch to branch `<branch>`? (yes / edit / cancel)"**
+1. Present the proposed branch name and ask for confirmation: **"Create and switch to branch `<branch>`? (1. yes / 2. edit / 3. cancel)"**
 2. On **yes**: run `git checkout -b <branch>` and confirm success.
 3. On **edit**: ask for the preferred name, then proceed.
 4. On **cancel**: stop and inform the user.
-
----
-
-## Mode 2 — Full workflow
 
 ### Step A — Deep-read the issue
 
@@ -83,28 +69,29 @@ Present the plan to the user with a summary of:
 - Key decisions and trade-offs
 - Any clarifying questions before starting
 
-Ask: **"Does this plan look good? (yes / edit / cancel)"**
+Ask: **"Does this plan look good? (1. yes / 2. edit / 3. cancel)"**
 
 Wait for confirmation before proceeding.
 
-### Step C — Create the branch
-
-Apply the same branch naming convention as Mode 1.
-Run `git checkout -b <branch>` before writing any code.
-
-### Step D — Implement
+### Step C — Implement
 
 Implement the plan step by step, following the project's architecture and conventions defined in CLAUDE.md
 
+### Step D — User validation
+
+Ask: **"Does this implementation look good? (1. yes / 2. edit / 3. cancel)"**
+
+Wait for confirmation before proceeding accordingly.
+
 ### Step E — Commit
 
-Invoke the `conventional-commit` skill to commit the changes.
+When user agreed with the implementation invoke the `conventional-commit` skill to commit the changes.
 
 ---
 
 ## Important Constraints
 
-- **Never start coding without user confirmation of the plan (Mode 2).**
+- **Never start coding without user confirmation of the plan.**
 - **Never skip branch creation** — always work on a dedicated branch.
 - **Never push** the branch unless the user explicitly asks.
 - If the issue is unclear or too vague, surface the ambiguity before planning.

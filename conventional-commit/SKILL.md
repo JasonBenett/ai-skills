@@ -83,7 +83,7 @@ Check if a `CHANGELOG.md` file exists in the project root. If it does:
 Show the user:
 1. The exact commit message you will use (formatted as a code block)
 2. The CHANGELOG.md diff (if applicable)
-3. Ask explicitly: **"Shall I proceed with this commit? (yes / edit / cancel)"**
+3. Ask explicitly: **"Shall I proceed with this commit? (1. yes / 2. edit / 3. cancel)"**
 
 Wait for the user's response before doing anything else.
 
