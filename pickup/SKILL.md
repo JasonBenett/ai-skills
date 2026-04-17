@@ -89,3 +89,4 @@ Additional constraints and instructions to Superpowers:
 - **Never push** branches unless the user explicitly asks.
 - **Never skip reading a sub-project's CLAUDE.md** before working in it.
 - If the issue spans repos ambiguously, ask the user to confirm which repos are in scope.
+- Update during each step of the flow, using Github MCP Server, the Github ticket status.
